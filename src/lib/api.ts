@@ -8,7 +8,7 @@ const YOUTUBE_AUTH_URL = 'https://accounts.google.com/o/oauth2/v2/auth';
 
 // Client IDs (in a real app, these would be environment variables)
 const SPOTIFY_CLIENT_ID = 'f9f28c2d3f244273b28170de25bb6412'; // Replace with your actual Spotify client ID
-const YOUTUBE_CLIENT_ID = '277878437261-pqf07865meto8k43ve2a314r4e99lltu.apps.googleusercontent.com'; // Replace with your actual YouTube client ID
+const YOUTUBE_CLIENT_ID = '277878437261-pqf07865meto8k43ve2a314r4e99lltu.apps.googleusercontent.com'; // Using the client ID from Google Cloud Console
 
 // Redirect URIs
 const REDIRECT_URI = `${window.location.origin}/auth/callback`;
@@ -105,19 +105,10 @@ export const authenticateSpotify = () => {
   // Construct the authorization URL
   const authUrl = `${SPOTIFY_AUTH_URL}?client_id=${SPOTIFY_CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&scope=${encodeURIComponent(scopes)}&response_type=code&state=${state}`;
   
-  // Redirect the browser to Spotify's authorization page
   console.log('Redirecting to Spotify auth URL:', authUrl);
   
-  // For demo/testing, we'll just log and simulate, but in a real app you'd redirect:
-  // window.location.href = authUrl;
-  
-  // For the demo, we'll simulate a successful auth
-  toast.info('For demo purposes, simulating Spotify authentication');
-  localStorage.setItem('spotify_connected', 'true');
-  
-  return new Promise<void>((resolve) => {
-    setTimeout(resolve, 1500);
-  });
+  // Redirect the browser to Spotify's authorization page
+  window.location.href = authUrl;
 };
 
 export const authenticateYouTube = () => {
@@ -134,19 +125,10 @@ export const authenticateYouTube = () => {
   // Construct the authorization URL
   const authUrl = `${YOUTUBE_AUTH_URL}?client_id=${YOUTUBE_CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&scope=${encodeURIComponent(scopes)}&response_type=code&state=${state}&access_type=offline`;
   
-  // Redirect the browser to YouTube/Google's authorization page
   console.log('Redirecting to YouTube auth URL:', authUrl);
   
-  // For demo/testing, we'll just log and simulate, but in a real app you'd redirect:
-  // window.location.href = authUrl;
-  
-  // For the demo, we'll simulate a successful auth
-  toast.info('For demo purposes, simulating YouTube authentication');
-  localStorage.setItem('youtube_connected', 'true');
-  
-  return new Promise<void>((resolve) => {
-    setTimeout(resolve, 1500);
-  });
+  // Redirect the browser to YouTube/Google's authorization page
+  window.location.href = authUrl;
 };
 
 // Update the AuthCallback page to handle the state parameter
@@ -159,7 +141,7 @@ export const simulateAuthRedirect = (service: 'spotify' | 'youtube') => {
   console.log(`Simulating ${service} auth redirect with code: ${mockCode} and state: ${mockState}`);
   
   // Simulate the redirect to the callback URL
-  // window.location.href = `${REDIRECT_URI}?code=${mockCode}&state=${mockState}&service=${service}`;
+  window.location.href = `${REDIRECT_URI}?code=${mockCode}&state=${mockState}`;
 };
 
 // Mock API calls
