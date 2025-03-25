@@ -3,12 +3,23 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, LogOut, User } from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const Navbar: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
+  const { user, profile, signOut } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -30,6 +41,16 @@ const Navbar: React.FC = () => {
     { name: 'Home', path: '/' },
     { name: 'Dashboard', path: '/dashboard' },
   ];
+
+  const getInitials = () => {
+    if (profile?.username) {
+      return profile.username.substring(0, 2).toUpperCase();
+    }
+    if (user?.email) {
+      return user.email.substring(0, 2).toUpperCase();
+    }
+    return 'U';
+  };
 
   return (
     <header
@@ -69,16 +90,45 @@ const Navbar: React.FC = () => {
               ))}
             </div>
             <div className="flex items-center space-x-4">
-              <Button asChild variant="ghost" size="sm">
-                <Link to="/dashboard" className="px-4">
-                  Dashboard
-                </Link>
-              </Button>
-              <Button asChild variant="default" size="sm">
-                <Link to="/dashboard" className="px-4">
-                  Get Started
-                </Link>
-              </Button>
+              {user ? (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="icon" className="rounded-full">
+                      <Avatar className="h-8 w-8">
+                        <AvatarImage src={profile?.avatar_url} alt={profile?.username || "User"} />
+                        <AvatarFallback>{getInitials()}</AvatarFallback>
+                      </Avatar>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem asChild>
+                      <Link to="/dashboard" className="cursor-pointer">
+                        <User className="mr-2 h-4 w-4" />
+                        Dashboard
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => signOut()} className="cursor-pointer">
+                      <LogOut className="mr-2 h-4 w-4" />
+                      Sign out
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : (
+                <>
+                  <Button asChild variant="ghost" size="sm">
+                    <Link to="/auth" className="px-4">
+                      Sign In
+                    </Link>
+                  </Button>
+                  <Button asChild variant="default" size="sm">
+                    <Link to="/auth?tab=signup" className="px-4">
+                      Sign Up
+                    </Link>
+                  </Button>
+                </>
+              )}
             </div>
           </div>
 
@@ -119,9 +169,38 @@ const Navbar: React.FC = () => {
               {item.name}
             </Link>
           ))}
-          <Button asChild variant="default" className="w-full mt-4">
-            <Link to="/dashboard">Get Started</Link>
-          </Button>
+          
+          {user ? (
+            <div className="pt-4 mt-4 border-t border-border">
+              <div className="flex items-center space-x-3 px-4 py-2 mb-3">
+                <Avatar className="h-10 w-10">
+                  <AvatarImage src={profile?.avatar_url} alt={profile?.username || "User"} />
+                  <AvatarFallback>{getInitials()}</AvatarFallback>
+                </Avatar>
+                <div>
+                  <p className="font-medium">{profile?.username || user.email?.split('@')[0]}</p>
+                  <p className="text-sm text-muted-foreground">{user.email}</p>
+                </div>
+              </div>
+              <Button 
+                variant="outline" 
+                className="w-full justify-start" 
+                onClick={() => signOut()}
+              >
+                <LogOut className="mr-2 h-4 w-4" />
+                Sign out
+              </Button>
+            </div>
+          ) : (
+            <div className="flex flex-col space-y-3">
+              <Button asChild variant="outline">
+                <Link to="/auth">Sign In</Link>
+              </Button>
+              <Button asChild>
+                <Link to="/auth?tab=signup">Sign Up</Link>
+              </Button>
+            </div>
+          )}
         </div>
       </div>
     </header>
