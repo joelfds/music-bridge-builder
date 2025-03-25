@@ -1,6 +1,4 @@
-// Placeholder for actual API implementation
-// In a real app, this would interact with backend services
-
+// API functionality for interacting with Spotify and YouTube
 import { Playlist } from '@/components/PlaylistCard';
 import { toast } from 'sonner';
 
@@ -191,5 +189,106 @@ export const convertPlaylist = (
     setTimeout(() => {
       resolve();
     }, 2000);
+  });
+};
+
+// New functions to fetch user profile data
+export interface SpotifyUserProfile {
+  id: string;
+  display_name: string;
+  email: string;
+  images: { url: string }[];
+  followers: { total: number };
+  country: string;
+  product: string;
+}
+
+export interface YouTubeUserProfile {
+  id: string;
+  name: string;
+  email: string;
+  picture: string;
+  subscriberCount: number;
+}
+
+// Fetch user profile from Spotify
+export const fetchSpotifyUserProfile = (): Promise<SpotifyUserProfile> => {
+  return new Promise((resolve) => {
+    // In a real app, this would make an API call to Spotify's /me endpoint
+    setTimeout(() => {
+      resolve({
+        id: 'spotify-user-123',
+        display_name: 'Spotify User',
+        email: 'user@example.com',
+        images: [{ url: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3' }],
+        followers: { total: 125 },
+        country: 'US',
+        product: 'premium'
+      });
+    }, 800);
+  });
+};
+
+// Fetch user profile from YouTube
+export const fetchYouTubeUserProfile = (): Promise<YouTubeUserProfile> => {
+  return new Promise((resolve) => {
+    // In a real app, this would make an API call to YouTube's user info endpoint
+    setTimeout(() => {
+      resolve({
+        id: 'youtube-user-456',
+        name: 'YouTube User',
+        email: 'user@example.com',
+        picture: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3',
+        subscriberCount: 1250
+      });
+    }, 800);
+  });
+};
+
+// Create a new playlist on Spotify
+export const createSpotifyPlaylist = (
+  name: string, 
+  description: string = '', 
+  isPublic: boolean = true
+): Promise<Playlist> => {
+  return new Promise((resolve) => {
+    // In a real app, this would make an API call to Spotify's create playlist endpoint
+    setTimeout(() => {
+      // Create a mock playlist with a unique ID
+      const newPlaylist: Playlist = {
+        id: 'sp-new-' + Date.now(),
+        name: name,
+        imageUrl: '',
+        trackCount: 0,
+        source: 'spotify'
+      };
+      
+      toast.success(`Playlist "${name}" created on Spotify`);
+      resolve(newPlaylist);
+    }, 1000);
+  });
+};
+
+// Create a new playlist on YouTube
+export const createYouTubePlaylist = (
+  name: string, 
+  description: string = '', 
+  isPrivate: boolean = false
+): Promise<Playlist> => {
+  return new Promise((resolve) => {
+    // In a real app, this would make an API call to YouTube's create playlist endpoint
+    setTimeout(() => {
+      // Create a mock playlist with a unique ID
+      const newPlaylist: Playlist = {
+        id: 'yt-new-' + Date.now(),
+        name: name,
+        imageUrl: '',
+        trackCount: 0,
+        source: 'youtube'
+      };
+      
+      toast.success(`Playlist "${name}" created on YouTube`);
+      resolve(newPlaylist);
+    }, 1000);
   });
 };
