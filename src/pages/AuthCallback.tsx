@@ -12,7 +12,7 @@ const AuthCallback = () => {
   useEffect(() => {
     const processAuth = async () => {
       try {
-        // Get the authorization code from the URL
+        // Get the authorization code and state from the URL
         const params = new URLSearchParams(location.search);
         const code = params.get('code');
         const state = params.get('state');
@@ -21,14 +21,22 @@ const AuthCallback = () => {
           throw new Error('No authorization code found');
         }
         
-        // Determine which service we're authenticating with
-        // In a real app, this would be encoded in the state parameter
-        const serviceParam = params.get('service') || state;
-        const authService = serviceParam?.includes('spotify') 
-          ? 'spotify' 
-          : serviceParam?.includes('youtube')
-            ? 'youtube'
-            : null;
+        // Determine which service we're authenticating with from the state parameter
+        let authService: 'spotify' | 'youtube' | null = null;
+        
+        if (state && state.startsWith('spotify-')) {
+          authService = 'spotify';
+        } else if (state && state.startsWith('youtube-')) {
+          authService = 'youtube';
+        } else {
+          // Fallback to service param (for backward compatibility)
+          const serviceParam = params.get('service');
+          authService = serviceParam?.includes('spotify') 
+            ? 'spotify' 
+            : serviceParam?.includes('youtube')
+              ? 'youtube'
+              : null;
+        }
             
         setService(authService);
         
@@ -45,10 +53,10 @@ const AuthCallback = () => {
         // Successfully authenticated
         setStatus('success');
         
-        // Store the token (in a real app)
+        // Store the token (in a real app, would store the actual token)
         localStorage.setItem(`${authService}_connected`, 'true');
         
-        // Redirect back to where the user was
+        // Get the return path or default to dashboard
         const returnPath = localStorage.getItem('auth_return_path') || '/dashboard';
         
         // Wait a moment before redirecting so the user sees the success message
@@ -59,6 +67,9 @@ const AuthCallback = () => {
       } catch (error) {
         console.error('Authentication callback error:', error);
         setStatus('error');
+        
+        // Show error toast
+        toast.error('Authentication failed. Please try again.');
         
         // Wait a moment before redirecting
         setTimeout(() => {
