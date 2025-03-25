@@ -8,7 +8,7 @@ const YOUTUBE_AUTH_URL = 'https://accounts.google.com/o/oauth2/v2/auth';
 
 // Client IDs (in a real app, these would be environment variables)
 const SPOTIFY_CLIENT_ID = 'f9f28c2d3f244273b28170de25bb6412'; // Replace with your actual Spotify client ID
-const YOUTUBE_CLIENT_ID = 'your-youtube-client-id'; // Replace with your actual YouTube client ID
+const YOUTUBE_CLIENT_ID = '277878437261-pqf07865meto8k43ve2a314r4e99lltu.apps.googleusercontent.com'; // Replace with your actual YouTube client ID
 
 // Redirect URIs
 const REDIRECT_URI = `${window.location.origin}/auth/callback`;
